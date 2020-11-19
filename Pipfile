@@ -9,6 +9,7 @@ bandit = "*"
 
 [packages]
 django = "*"
+django-nested-admin = "*"
 
 [requires]
 python_version = "3.8"
