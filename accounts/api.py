@@ -3,7 +3,8 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 
 from accounts.models import User
-from accounts.serializers import LoginSerializer, RegisterSerializer, UserSerializer
+from accounts.serializers import (LoginSerializer, RegisterSerializer,
+                                  UserSerializer)
 
 
 class RegisterAPI(generics.GenericAPIView):

@@ -16,6 +16,67 @@ class AnswerSerializer(serializers.ModelSerializer):
         fields = ["id", "question", "label"]
 
 
+class MyQuizListSerializer(serializers.ModelSerializer):
+    completed = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
+    score = serializers.SerializerMethodField()
+    questions_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Quiz
+        fields = [
+            "id",
+            "name",
+            "description",
+            "image",
+            "slug",
+            "questions_count",
+            "completed",
+            "score",
+            "progress",
+        ]
+        read_only_field = ["questions_count", "completed", "score", "progress"]
+
+    def get_questions_count(self, obj):
+        return obj.question_set.all().count()
+
+    def get_completed(self, obj):
+        try:
+            quiz_taker = QuizTaker.objects.get(
+                user=self.context["request"].user, quiz=obj
+            )
+            return quiz_taker.completed
+        except QuizTaker.DoesNotExist:
+            return None
+
+    def get_progress(self, obj):
+        try:
+            quiz_taker = QuizTaker.objects.get(
+                user=self.context["request"].user, quiz=obj
+            )
+            if quiz_taker.completed is False:
+                return int(
+                    UsersAnswer.objects.filter(
+                        quiz_taker=quiz_taker, answer__isnull=False
+                    ).count()
+                    / obj.question_set.all().count()
+                )
+            return 100
+        except QuizTaker.DoesNotExist:
+            return None
+
+    def get_score(self, obj):
+        try:
+            quiz_taker = QuizTaker.objects.get(
+                user=self.context["request"].user, quiz=obj
+            )
+            if quiz_taker.completed is True:
+                return quiz_taker.score
+            return 0
+        except QuizTaker.DoesNotExist:
+            return None
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     answer_set = AnswerSerializer(many=True)
 
@@ -58,5 +119,24 @@ class QuizDetailSerializer(serializers.ModelSerializer):
                 user=self.context["request"].user, quiz=obj
             )
             serializer = QuizTakerSerializer(quiz_taker)
+        except QuizTaker.DoesNotExist:
+            return None
+
+
+class QuizResultSerializer(serializers.ModelSerializer):
+    quiztaker_set = serializers.SerializerMethodField()
+    question_set = QuestionSerializer(many=True)
+
+    class Meta:
+        model = Quiz
+        fields = "__all__"
+
+    def get_quiztaker_set(self, obj):
+        try:
+            quiztaker = QuizTaker.objects.get(
+                user=self.context["request"].user, quiz=obj
+            )
+            serializer = QuizTakerSerializer
+            return serializer.data
         except QuizTaker.DoesNotExist:
             return None
