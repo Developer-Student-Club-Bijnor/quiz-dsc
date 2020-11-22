@@ -10,6 +10,9 @@ bandit = "*"
 [packages]
 django = "*"
 django-nested-admin = "*"
+djangorestframework = "==3.11"
+pillow = "*"
+django-rest-knox = "==4.1.0"
 
 [requires]
 python_version = "3.8"

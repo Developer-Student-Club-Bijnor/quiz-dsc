@@ -1,7 +1,7 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
-from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
 
@@ -9,9 +9,10 @@ from django.template.defaultfilters import slugify
 class Quiz(models.Model):
     name = models.CharField(max_length=250)
     description = models.CharField(max_length=500)
+    image = models.ImageField(blank=True, null=True)
+    slug = models.SlugField(blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     roll_out = models.BooleanField(default=False)
-    slug = models.SlugField()
 
     class Meta:
         ordering = ["created"]
@@ -39,17 +40,18 @@ class Answer(models.Model):
 
 
 class QuizTaker(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    correct_answers = models.IntegerField(default=0)
+    score = models.IntegerField(default=0)
     completed = models.BooleanField(default=False)
+    date_finished = models.DateTimeField
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
 
 
-class Response(models.Model):
+class UsersAnswer(models.Model):
     quiztaker = models.ForeignKey(QuizTaker, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True, blank=True)
@@ -59,7 +61,7 @@ class Response(models.Model):
 
 
 @receiver(pre_save, sender=Quiz)
-def slugify_title(sender, instance, *args, **kwargs):
+def slugify_name(sender, instance, *args, **kwargs):
     instance.slug = slugify(instance.name)
 
 
