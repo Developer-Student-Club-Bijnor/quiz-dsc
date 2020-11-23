@@ -21,4 +21,5 @@ urlpatterns = [
     path("nested_admin/", include("nested_admin.urls")),
     path("api/", include("quiz.urls")),
     path("api/auth/", include("accounts.urls")),
+    path("", include("frontend.urls")),
 ]

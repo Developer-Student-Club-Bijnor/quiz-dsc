@@ -29,6 +29,9 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 AUTH_USER_MODEL = "accounts.User"
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,12 +44,15 @@ INSTALLED_APPS = [
     "nested_admin",
     "rest_framework",
     "knox",
+    "corsheaders",
     # local
     "quiz",
     "accounts",
+    "frontend",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -130,3 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = (BASE_DIR,)

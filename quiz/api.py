@@ -5,9 +5,13 @@ from rest_framework.response import Response
 
 from quiz.models import Answer, Question, Quiz, QuizTaker, UsersAnswer
 
-from .serializers import (MyQuizListSerializer, QuizDetailSerializer,
-                          QuizListSerializer, QuizResultSerializer,
-                          UsersAnswerSerializer)
+from .serializers import (
+    MyQuizListSerializer,
+    QuizDetailSerializer,
+    QuizListSerializer,
+    QuizResultSerializer,
+    UsersAnswerSerializer,
+)
 
 
 class MyQuizListAPI(generics.ListAPIView):
@@ -67,7 +71,7 @@ class QuizDetailAPI(generics.RetrieveAPIView):
                 UsersAnswer.objects.create(quiz_taker=obj, question=question)
         else:
             last_question = UsersAnswer.objects.filter(
-                quiz_taker=obj, answer__isnull=False
+                quiztaker=obj, answer__isnull=False
             )
             if last_question.count() > 0:
                 last_question = last_question.last().question.id

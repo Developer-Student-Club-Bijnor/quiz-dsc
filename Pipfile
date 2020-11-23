@@ -5,7 +5,6 @@ verify_ssl = true
 
 [dev-packages]
 black = "*"
-bandit = "*"
 
 [packages]
 django = "*"
@@ -13,6 +12,7 @@ django-nested-admin = "*"
 djangorestframework = "==3.11"
 pillow = "*"
 django-rest-knox = "==4.1.0"
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.8"

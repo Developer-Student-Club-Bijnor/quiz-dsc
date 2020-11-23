@@ -13,7 +13,7 @@ class UsersAnswerSerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ["id", "question", "label"]
+        fields = ["id", "question", "text"]
 
 
 class MyQuizListSerializer(serializers.ModelSerializer):
@@ -57,7 +57,7 @@ class MyQuizListSerializer(serializers.ModelSerializer):
             if quiz_taker.completed is False:
                 return int(
                     UsersAnswer.objects.filter(
-                        quiz_taker=quiz_taker, answer__isnull=False
+                        quiztaker=quiz_taker, answer__isnull=False
                     ).count()
                     / obj.question_set.all().count()
                 )
@@ -86,7 +86,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class QuizTakerSerializer(serializers.ModelSerializer):
-    users_answer_set = UsersAnswerSerializer(many=True)
+    usersanswer_set = UsersAnswerSerializer(many=True)
 
     class Meta:
         model = QuizTaker
@@ -107,7 +107,7 @@ class QuizListSerializer(serializers.ModelSerializer):
 
 class QuizDetailSerializer(serializers.ModelSerializer):
     quiztakers_set = serializers.SerializerMethodField()
-    questions_set = QuestionSerializer(many=True)
+    question_set = QuestionSerializer(many=True)
 
     class Meta:
         model = Quiz
@@ -119,6 +119,7 @@ class QuizDetailSerializer(serializers.ModelSerializer):
                 user=self.context["request"].user, quiz=obj
             )
             serializer = QuizTakerSerializer(quiz_taker)
+            return serializer.data
         except QuizTaker.DoesNotExist:
             return None
 

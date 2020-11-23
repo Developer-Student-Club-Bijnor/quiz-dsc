@@ -1,0 +1,14 @@
+{%extends 'main.html'%}
+{%load rest_framework%}
+
+{%block content%}
+<form action="" class="form-group" method="POST">
+    {%csrf_token%}
+
+    {%render_form serializer %}
+
+    <div class="col-sm-offset-2 col-sm-10">
+        <button id="login" class="btn btn-default" type="submit">Sign in</button>
+    </div>
+</form>
+{%endblock%}
