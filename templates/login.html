@@ -1,14 +1,27 @@
 {%extends 'main.html'%}
-{%load rest_framework%}
+
 
 {%block content%}
-<form action="" class="form-group" method="POST">
-    {%csrf_token%}
+<div class="container">
 
-    {%render_form serializer %}
+    <div class="d-flex justify-content-center mx-auto">
+        <div id="form-wrapper">
 
-    <div class="col-sm-offset-2 col-sm-10">
-        <button id="login" class="btn btn-default" type="submit">Sign in</button>
-    </div>
-</form>
+            <form action="{%url 'login'%}" class="form-group" method="POST">
+                {%csrf_token%}
+                Username:
+                <input type="text" id="username" name="username">
+                Password:
+                <input type="password" id="password" name="password">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button id="login" class="btn btn-default" type="submit">Sign in</button>
+                </div>
+            </form>
+        </div>
+        <a href="{%url 'register'%}">Signup Here:</a>
+        </div>
+        </div>
+        <script>
+            user_login();
+        </script>
 {%endblock%}

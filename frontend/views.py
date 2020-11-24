@@ -1,11 +1,10 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from accounts.serializers import LoginSerializer
 
 # Create your views here.
 
-# @login_required(login_url='login')
+
 def home(request):
     context = {}
     template_name = "frontend/home.html"
@@ -13,5 +12,12 @@ def home(request):
 
 
 def login(request):
-    serializer = LoginSerializer
-    return render(request, "login.html", context={"serializer": serializer})
+    # if request.method == "POST":
+    # return redirect("/")
+    return render(request, "login.html", context={})
+
+
+def register(request):
+    # if request.method == "POST":
+    #     return redirect("login")
+    return render(request, "register.html")
