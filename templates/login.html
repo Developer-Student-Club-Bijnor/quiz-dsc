@@ -1,26 +1,26 @@
 {%extends 'main.html'%}
-
+{% load static %}
 
 {%block content%}
 <div class="container">
-
-    <div class="d-flex justify-content-center mx-auto">
-        <div id="form-wrapper">
-
+    <img src="{%static 'images/logo.png' %}"class="logo">
+        <h1>Login</h1>
+         <hr>
             <form action="{%url 'login'%}" class="form-group" method="POST">
                 {%csrf_token%}
                 Username:
                 <input type="text" id="username" name="username">
                 Password:
                 <input type="password" id="password" name="password">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button id="login" class="btn btn-default" type="submit">Sign in</button>
+                <div class="action-btn col-sm-offset-2 col-sm-10 ">
+                    <button id="login" class="btn" type="submit"><b>Sign in</b></button>
+                    <hr>
+                    
+                    <a href="{% url 'register'%}">Signup</a>
                 </div>
             </form>
         </div>
-        <a href="{%url 'register'%}">Signup Here:</a>
-        </div>
-        </div>
+       
         <script>
             user_login();
         </script>
