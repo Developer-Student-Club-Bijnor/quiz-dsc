@@ -11,22 +11,28 @@ function get_cookie(key) {
     return keyValue ? keyValue[2] : null;
 }
 
-var access_token = localStorage.getItem("access_token")
-url = "http://127.0.0.1:8000/api/auth/user/"
-user = document.getElementById("user")
+function user() {
+    var access_token = localStorage.getItem("access_token")
+    url = "http://127.0.0.1:8000/api/auth/user/"
+    user = document.getElementById("user")
 
-fetch(url, {
-    method: "GET",
-    headers: {
-        'Content-type': 'application/json',
-        'Authorization': `Token ${access_token}`,
-    },
-}).then((resp) => resp.json()).then(
-    function (data) {
-        console.log(data)
-        user.innerHTML += data.username + "<a href=''>Logout</a>"
-    }
-)
+    fetch(url, {
+        method: "GET",
+        headers: {
+            'Content-type': 'application/json',
+            'Authorization': `Token ${access_token}`,
+        },
+    }).then((resp) => resp.json()).then(
+        function (data) {
+            if (data.username) {
+                console.log(data)
+                user.innerHTML = "Hi " + data.username + "<button id='logout' onclick='user_logout();'>Logout</button>"
+            } else {
+
+            }
+
+        })
+}
 
 
 function user_login() {
@@ -51,8 +57,17 @@ function user_login() {
             })
         }).then((resp) => resp.json())
             .then(function (data) {
-                console.log("User Data: ", data)
-                localStorage.setItem("access_token", data.token)
+                if (data.user) {
+                    console.log("User Data: ", data)
+                    localStorage.setItem("access_token", data.token)
+                    form.innerHTML += `<div class="alert alert-success" role="alert">Login Successful</div>`
+                    window.location.href = "/"
+                    user()
+                    return
+                } else {
+                    console.log(data)
+                    form.innerHTML += `<div class="alert alert-warning" role="alert">${data.non_field_errors}</div>`
+                }
             })
     })
 
@@ -63,13 +78,17 @@ function user_register() {
 
     var form = document.getElementById('form-wrapper')
     form.addEventListener('submit', function (e) {
-        // e.preventDefault()
-        // console.log("form Submitted...")
+        e.preventDefault()
+        console.log("form Submitted...")
         var username = document.getElementById('username').value
         var name = document.getElementById('name').value
         var email = document.getElementById('email').value
-        var password = document.getElementById('password').value
-        var password2 = document.getElementById('password2').value
+        var password = document.getElementById('password')
+        var password2 = document.getElementById('password2')
+        if (password.value != password2.value) {
+            password2.innerHTML += `<div class="invalid-feedback">The two password fields didn’t match.</div>`
+            return
+        }
         var url = "http://127.0.0.1:8000/api/auth/register/"
         fetch(url, {
             method: "POST",
@@ -81,20 +100,41 @@ function user_register() {
                 "username": username,
                 "name": name,
                 "email": email,
-                "password": password
+                "password": password.value
             })
-        }).then((resp) => resp.json())
-            .then(function (data) {
-                console.log("User Data: ", data)
-            })
+        }).then(function (resp) {
+            console.log(resp.status)
+            status = resp.status
+            return resp.json()
+        }).then(function (data) {
+            if (status > 399 && status < 500) {
+                for (var i in data) {
+                    form.innerHTML += `<div class="alert alert-warning" role = "alert" > ${data[i]}</div >`
+                }
+            } else {
+                form.innerHTML += `<div class="alert alert-success" role = "alert" > Signup successful</div >`
+            }
+            console.log("User Data: ", data)
+            window.location.href = '/login/'
+        })
     })
 
 }
+
+function user_logout() {
+    console.log("logout clicked...")
+    localStorage.setItem('access_token', null)
+    window.location.href = '/login/'
+
+}
+
+user();
 // user_login();
 // buildList()
 
 function buildList() {
     // var access_token = get_cookie("access_token")
+    var access_token = localStorage.getItem("access_token")
     wrapper = document.getElementById('list-wrapper')
     var url = "http://127.0.0.1:8000/api/quizs/"
     fetch(url, {

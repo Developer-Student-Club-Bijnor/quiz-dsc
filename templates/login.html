@@ -3,25 +3,24 @@
 
 {%block content%}
 <div class="container">
-    <img src="{%static 'images/logo.png' %}"class="logo">
-        <h1>Login</h1>
-         <hr>
-            <form action="{%url 'login'%}" class="form-group" method="POST">
-                {%csrf_token%}
-                Username:
-                <input type="text" id="username" name="username">
-                Password:
-                <input type="password" id="password" name="password">
-                <div class="action-btn col-sm-offset-2 col-sm-10 ">
-                    <button id="login" class="btn" type="submit"><b>Sign in</b></button>
-                    <hr>
-                    
-                    <a href="{% url 'register'%}">Signup</a>
-                </div>
-            </form>
+    <img src="{%static 'images/logo.png' %}" class="logo">
+    <h1>Login</h1>
+    <hr>
+    <div id='form-wrapper'>
+        <form class="form-group" action="/login/" method="POST">
+        {%csrf_token%}
+        Username:
+        <input type="text" id="username" name="username">
+        Password:
+        <input type="password" id="password" name="password">
+        <div class="action-btn col-sm-offset-2 col-sm-10 ">
+            <button id="login" class="btn" type="submit"><b>Sign in</b></button>
+            <hr>
+
+            <a href="{% url 'register'%}">Signup</a>
         </div>
-       
-        <script>
-            user_login();
-        </script>
+    </form>
+    </div>
+</div>
+<script>user_login();</script>
 {%endblock%}
