@@ -21,3 +21,8 @@ def register(request):
     # if request.method == "POST":
     #     return redirect("login")
     return render(request, "register.html")
+
+def quiz(request):
+    # if request.method == "POST":
+    #     return redirect("login")
+    return render(request, "quiz.html")    
